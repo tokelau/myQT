@@ -118,19 +118,22 @@ void Calculator::slotButtonClicked()
     }
     else {
         if (str == "SIN" || str == "COS" || str == "1/x" || str == "TAN") {
-            if (!m_stk.empty()) {
+            if (!m_stk.count() > 1) {
                 m_stk.push(QString().setNum(m_plcd->value()));
                 calculate();
+                m_stk.clear();
+                m_stk.push(QString().setNum(m_plcd->value()));
+            } else if (m_stk.empty()) {
+                m_stk.push(QString().setNum(m_plcd->value()));
             }
-
-            m_stk.push(QString().setNum(m_plcd->value()));
             m_stk.push(str);
             calculate();
 
             m_stk.clear();
-            m_stk.push(QString().setNum(m_plcd->value()));
-        } else if (m_stk.count() == 2 || str == "=") {
-            std::cout<<"2"<<std::endl;
+            //m_stk.push(QString().setNum(m_plcd->value()));
+
+        } else if (m_stk.count() == 2) {
+            //std::cout<<"2"<<std::endl;
             m_stk.push(QString().setNum(m_plcd->value()));
             calculate();
             m_stk.clear();
@@ -140,9 +143,11 @@ void Calculator::slotButtonClicked()
             }
             m_strDisplay = "";
         } else {
-            std::cout<<"0"<<std::endl;
+            m_stk.clear();
             m_stk.push(QString().setNum(m_plcd->value()));
-            m_stk.push(str);
+            if (str != "=") {
+                m_stk.push(str);
+            }
             m_strDisplay = "";
         }
     }
